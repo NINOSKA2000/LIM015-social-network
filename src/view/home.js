@@ -39,71 +39,68 @@ const viewHome = () => {
   const postArea = divHome.querySelector("#postArea");
 
   const postsContainer = divHome.querySelector("#postsHomeContainer");
-  // const getPosts = () => firebase.firestore().collection('posts').get();
-
-  /*
-  const posts=postArea.value;
-  let idUser=counter +=1;
-  firebase.auth().onAuthStateChanged((user)=>{
-    if(user){
-      firebase.firestore().collection(user.uid).doc(user.uid+"_"+idUser).set({
-        id:user.uid+"_"+ idUser,
-        posts
-      }).then(() => {
-        console.log("añadiste id de post al data base");
-    }).catch(err=>console.log(err))
-    }});*/
-
+ 
   const showAllPosts = async (section) => {
       onGetPosts((snapshot) => {
       postsContainer.innerHTML = "";
       const newSection = document.createElement("section");
-      snapshot.forEach((doc) => {
-       
-        const postText = doc.data();
-        postText.id = doc.id;
-
-        newSection.innerHTML += `
-        <div class="home__imgUser" id="userImg" >ImgUser </div>
-        <div class="home__nameuser"> compartió </div>
-        <div> 3 septiembre </div>
+      //const username = divHome.querySelector("#home__userName");
       
-        <div class="HomeShare__input">
-          <textarea class="HomeShare__input" rows="4" cols="50" id="text-${postText.id}" data-id="${postText.id}"
-            readonly>${postText.post}</textarea>
-        </div>
-      
-        <div class="home__like"> me gusta</div>
-        <button class="btn-edit" data-id="${postText.id}"> editar</button>
-        <button class="btn-delete" data-id="${postText.id}"> eliminar</button>  
-        `;
-        section.appendChild(newSection);
-
-        const btnsDelete = postsContainer.querySelectorAll(".btn-delete");
-        btnsDelete.forEach((btn) => {
-          btn.addEventListener("click", async (e) => {
-            await deletePosts(e.target.dataset.id);
-          });
-        });
-
-        const btnsEdit = postsContainer.querySelectorAll(".btn-edit");
-        btnsEdit.forEach((btn) => {
-          btn.addEventListener("click", async (e) => {
-            console.log(btn);
-            const idTextPost = e.target.dataset.id;
-            const contentTextPost = document.getElementById(
-              `text-${idTextPost}`
-            );
-            contentTextPost.removeAttribute("readonly");
-            console.log(contentTextPost.value);
-            await updatePost(idTextPost, { post: contentTextPost.value });
-            contentTextPost.focus();
-            btn.innerText = "Guardar";
-          });
-        });
-
+         firebase.auth().onAuthStateChanged((user) => {
+         if (user) {
+          console.log(user);
+          firebase.firestore().collection("users").doc(user.uid).get().then((docUser) => {
+                snapshot.forEach((doc) => {
+                const postText = doc.data();
+                postText.id = doc.id;
+        
+                newSection.innerHTML += /*html*/`
+                <div class="home__imgUser" id="userImg" >ImgUser </div>
+                <div class="home__nameuser"> ${docUser.data().Name}compartió </div>
+                <div> 3 septiembre </div>
+              
+                <div class="HomeShare__input">
+                  <textarea class="HomeShare__input" rows="4" cols="50" id="text-${postText.id}" data-id="${postText.id}"
+                    readonly>${postText.post}</textarea>
+                </div>
+              
+                <div class="home__like"> me gusta</div>
+                <button class="btn-edit" data-id="${postText.id}"> editar</button>
+                <button class="btn-delete" data-id="${postText.id}"> eliminar</button>  
+                `;
+                section.appendChild(newSection);
+        
+                const btnsDelete = postsContainer.querySelectorAll(".btn-delete");
+                btnsDelete.forEach((btn) => {
+                  btn.addEventListener("click", async (e) => {
+                    await deletePosts(e.target.dataset.id);
+                  });
+                });
+        
+                const btnsEdit = postsContainer.querySelectorAll(".btn-edit");
+                btnsEdit.forEach((btn) => {
+                  btn.addEventListener("click", async (e) => {
+                    console.log(btn);
+                    const idTextPost = e.target.dataset.id;
+                    const contentTextPost = document.getElementById(
+                      `text-${idTextPost}`
+                    );
+                    contentTextPost.removeAttribute("readonly");
+                    console.log(contentTextPost.value);
+                    await updatePost(idTextPost, { post: contentTextPost.value });
+                    contentTextPost.focus();
+                    btn.innerText = "Guardar";
+                  });
+                });
+        
+              });
+              
+            });
+        } else {
+          console.log("no estas ");
+        }
       });
-
+  
     });
   };
 
@@ -153,11 +150,6 @@ const viewHome = () => {
     homePost.reset();
     postArea.focus();
   });
-
-
-
-
-
 
   return divHome;
 };

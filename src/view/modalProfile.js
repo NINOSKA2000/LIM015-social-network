@@ -1,5 +1,5 @@
 const modalProfile = () => {
-    const ContentModalProfile = `
+    const ContentModalProfile =/*html*/ `
     <section class="containerModalProfile">
         <div class="headerModal">
             <span><i class="fas fa-times-circle"></i></span>
