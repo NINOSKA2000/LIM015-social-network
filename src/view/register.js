@@ -104,7 +104,7 @@ const viewRegister = () => {
       passwordRegister.type = "password";
       iconEyeR.classList.add('fa-eye-slash')
       iconEyeR.classList.remove('fa-eye')
-    }
+    }});
 
   iconEyeBoxR.addEventListener("click", () => {
     if (passwordRegister.type === "password") {
@@ -205,7 +205,7 @@ const viewRegister = () => {
 
   return sectionRegister;
 
-})}
+}
 
 export { viewRegister }
 
