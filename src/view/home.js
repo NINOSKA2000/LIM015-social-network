@@ -106,37 +106,48 @@ const viewHome = () => {
       </div>
       
       <div class="home__like"> me gusta</div>  
+      <div id="botones">
       ${(postText.userId === user.uid) ?
           `<div class="btns-edit-delete" name="${postText.userId}" data-id-post="${postText.userId}">
           <button class="btn-edit" data-id="${postText.id}"> editar</button>
           <button class="btn-delete" data-id="${postText.id}"> eliminar</button>  
         </div>` : ''}
+      </div>
       `;
+      
       postListContainer.appendChild(newSection);
     })
     // Función que elimina el post
     const btnDelete = document.querySelectorAll(".btn-delete");
     btnDelete.forEach( (btn) => btn.addEventListener("click", async (e) => {
       await deletePosts(e.target.dataset.id);
+
      
     }));
     
     // Función que edita el post
     const btnEdit = postListContainer.querySelectorAll(".btn-edit");
+    
+
     btnEdit.forEach((btn) => {
       btn.addEventListener("click", (e) => {
+
         const idTextPost = e.target.dataset.id;
         const contentTextPost = document.getElementById(`text-${idTextPost}`);
         contentTextPost.removeAttribute("readonly");
         btn.innerText = "Guardar";
+        //btnDelete.style.display="none";
+        btnDelete.forEach(btdelete=>btdelete.innerText="cancelar")
         console.log(contentTextPost.value);
+        if(e.target.innertext=="Guardar") { 
         updatePost(idTextPost, { post: contentTextPost.value });
         contentTextPost.focus();
+        btn.innerText = "Guardar";
+      }
+        
       });
     });
   };
-
-
 
 
   return divHome;

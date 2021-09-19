@@ -1,5 +1,4 @@
-
-import { loginEmail, loginGoogle } from '../firebase/fb-functions.js';
+import { loginEmail, loginGoogle } from "../firebase/fb-functions.js";
 
 const viewLogin = () => {
   const htmlLogin = `
@@ -106,7 +105,7 @@ const viewLogin = () => {
       iconEye.classList.remove("fa-eye");
     }
   });
-
+  //SignIn With Email and Password Function
   loginForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const emailLogin = document.querySelector("#emailLogin").value;
@@ -145,10 +144,6 @@ const viewLogin = () => {
       });
     console.log("click google");
   });
-
-
-
-
 
   return sectionLogin;
 };
