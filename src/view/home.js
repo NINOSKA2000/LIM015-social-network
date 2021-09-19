@@ -122,11 +122,7 @@ const viewHome = () => {
     btnDelete.forEach( (btn) => btn.addEventListener("click", async (e) => {
       await deletePosts(e.target.dataset.id);
 
-     
-    }));
-    
-    // Función que edita el post
-    const btnEdit = postListContainer.querySelectorAll(".btn-edit");
+    // Función que editar el post    
     
 
     btnEdit.forEach((btn) => {
@@ -149,8 +145,8 @@ const viewHome = () => {
     });
   };
 
-
   return divHome;
 };
+
 
 export { viewHome };
