@@ -80,6 +80,8 @@
 .button {
   border-radius: 60px;
   font-size: 1rem;
+  text-align: center;
+  justify-content: center;
   padding: 0.3em 0.2em;
   margin: 0.25em 0.2em;
   border-style: none;
@@ -95,6 +97,17 @@
   box-shadow: 0px 6px 16px 0px rgba(104, 36, 127, 0.5);
   padding: 0.5em 1.6em;
   font-weight: bold;
+}
+
+.form--login__button,
+.form--login__social,
+.signup-button,
+.signup-social {
+  width: 40%;
+}
+
+.button--login {
+  width: 100%;
 }
 
 .button--main:hover {
@@ -119,8 +132,9 @@
   width: 20%;
 }
 .googleIcon {
-  width: 70%;
+  width: 20px;
   float: left;
+  margin-left: 4px;
 }
 
 .form--separator {
@@ -187,6 +201,15 @@
 .fa-times {
   color: #f11c40e8;
 }
+.btn-saveEditPost {
+  display: none;
+}
+
+
+/* ocultar boton guardar cambios */
+/* .btn-cancelEdit{
+  display: none;
+} */
 
 @media (min-width: 600px) {
   .form--login__inputList,
