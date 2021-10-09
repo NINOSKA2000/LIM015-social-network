@@ -1,23 +1,32 @@
 import {
   registerEmail,
   loginGoogle,
-  updateProfile,
+  emailVerification,
 } from "../firebase/fb-functions.js";
+import {
+  modalRegisterVerification,
+} from "../view/modals.js";
+import { saveUser } from "../firebase/fb-firestore.js";
 const viewRegister = () => {
   const htmlRegister = /*html*/ `
   <div class="viewDesktop">
-    <img class="viewDesktop__logo" src="./img/logoMobilPrueba.jpg" alt="Makipura">
-    <img class="viewDesktop__woman" src="./img/woman.png" alt="Makipura">
+    <div class="container__logoDesktop">
+       <img class="viewDesktop__logo" src="./img/logoMobilPrueba.png" alt="Makipura">
+    </div>
+    <div class="container__logoDesktopWoman">
+       <img class="viewDesktop__woman" src="./img/woman.png" alt="Makipura">
+    </div>
   </div>
   <div class="register">
     <div class="logo">
-      <img class="logo__img" src="./img/logoMobilPrueba.jpg" width="150" alt="Makipura">
+      <img class="logo__img" src="./img/logoMobilPrueba.png" alt="Makipura">
     </div>
     <div class="register__Subtitle">
       <h2 class="register__h2">¡Estas a un paso de unirte a la red de emprendedoras más grande del Perú! </h2>
     </div>
     <div class="register__title">
       <h1 class="register__h1">REGISTRATE</h1>
+
     </div>
     <form class="form form--register" id="loginForm-signup" action="">
       <div class="form--register__inputList">
@@ -52,14 +61,18 @@ const viewRegister = () => {
           <div class="buttton button--second__img"><img class="googleIcon" src="./img/iconoGoogle.png" alt="icono_Google"></div>
           <div class="buttton button--second__text">Ingresar con Google</div> 
         </button>
+        <div class="login__registerLink">
+        <p>¿Ya tienes cuenta?</br>Ingresa<a class="link" href="/#"> aquí</a></p>
+        </div>
       </div>
     </form>
-    <div class="backArrow" id="backArrowLogin">
-      <a href="/#"><i class="far fa-arrow-alt-circle-left"></i></a>
-    </div>
+
+    <section id="modalVerification" class="modalVerification"></section>
+
   </div>
     `;
 
+    
   const sectionRegister = document.createElement("section");
   sectionRegister.classList.add("registerSection");
 
@@ -83,7 +96,7 @@ const viewRegister = () => {
   passwordRegister.addEventListener("keyup", () => {
     const requiredPassword =
       /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z\d]).{6,}$/gm;
-    console.log(passwordRegister.value);
+   
     if (requiredPassword.test(passwordRegister.value)) {
       spanPassword.classList.add("validateEmail");
       spanPassword.classList.remove("invalidEmail");
@@ -125,6 +138,8 @@ const viewRegister = () => {
     }
   });
 
+ 
+
   signupForm.addEventListener("submit", (e) => {
     e.preventDefault();
     if (passwordRegister.value === passwordConfirmRegister.value) {
@@ -132,15 +147,42 @@ const viewRegister = () => {
       const email = document.querySelector("#emailRegister").value;
       const name = document.querySelector("#nameRegister").value;
       const password = document.querySelector("#passwordRegister").value;
+      const modalVerification = document.querySelector("#modalVerification");
+      modalVerification.appendChild(modalRegisterVerification(email));
       registerEmail(email, password)
-        .then((cred) => {
+        .then((credential) => {
+          console.log(credential);
+          const uId = credential.user.uid;
+          console.log(uId);
+            const uName = name;
+          console.log(name);
+            const uLastname = '';
+            const uPhoto = './img/usuario.png';
+            const uEmail=email;
+            const uPhone="999 999 999";
+            const uCompany="Mi Empresa SAC";
+            const uLocation="Distrito, Departamento, Perú";
+            const uDescription="Describe tu emprendimiento";
+
+            const userProfile = {  
+            userId : uId,
+            userName: uName.toLowerCase(),
+            userLastname: uLastname.toLowerCase(),
+            userPhoto: uPhoto,
+            userEmail:uEmail,
+            userPhone:uPhone,
+            userCompany:uCompany,
+            userLocation:uLocation,
+            userDescription:uDescription
+            };
+            saveUser(userProfile);
+
           //base de datos de usuario
           if (email && name && password) {
-            updateProfile(name);
+            //updateProfile(name);
+            emailVerification();
           }
-          console.log(cred.user);
           signupForm.reset();
-          window.open("#", "_self"); // otros usan el hash
         })
         .catch(() => {
           spanErrorEmail.classList.add("invalidEmail");
@@ -164,10 +206,38 @@ const viewRegister = () => {
   );
   buttonGoogleSignup.addEventListener("click", () => {
     loginGoogle()
-      .then(() => {
-        console.log("signin with google");
-        window.open("#/home", "_self");
-      })
+    .then((userCredential) => {
+      const newUser = userCredential.additionalUserInfo.isNewUser;
+      if (newUser){
+        const uId = userCredential.user.uid;
+        const uName = userCredential.additionalUserInfo.profile.given_name;
+        const uLastname = userCredential.additionalUserInfo.profile.family_name;
+        const uPhoto = userCredential.additionalUserInfo.profile.picture;
+        const uEmail=userCredential.user.email;
+        const uPhone="999 999 999";
+        const uCompany="Mi Empresa SAC";
+        const uLocation="Distrito, Departamento, Perú";
+        const uDescription="Describe tu emprendimiento";
+
+
+        const userProfile = {
+         userId : uId,
+         userName: uName.toLowerCase(),
+         userLastname: uLastname.toLowerCase(),
+         userPhoto: uPhoto,
+         userEmail:uEmail,
+         userPhone:uPhone,
+         userCompany:uCompany,
+         userLocation:uLocation,
+         userDescription:uDescription
+
+        };
+        saveUser(userProfile);
+        /*guardar data en local storage*/
+        //localStorage.setItem("User",userProfile)
+      }
+      window.open("#/home", "_self");
+    })
       .catch((error) => {
         console.log(error);
       });
